@@ -19,7 +19,10 @@ export async function call(
         model,
         temperature: 0,
         messages: [
-          { role: "system", content: "Extract structured data from the provided information." },
+          {
+            role: "system",
+            content: "Extract structured data from the provided information.",
+          },
           { role: "user", content: prompt },
         ],
         response_format: {
