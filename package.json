@@ -1,0 +1,25 @@
+{
+  "name": "csv-prompt",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "csv-prompt": "src/index.ts"
+  },
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/papaparse": "^5.5.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "openai": "^6.33.0",
+    "p-queue": "^9.1.2",
+    "papaparse": "^5.5.3",
+    "zod": "^4.3.6"
+  }
+}
