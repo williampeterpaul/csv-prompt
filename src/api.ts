@@ -1,5 +1,10 @@
 import OpenAI from "openai";
 
+export interface Tools {
+  search?: boolean;
+  xSearch?: boolean;
+}
+
 export function client(key: string): OpenAI {
   return new OpenAI({ apiKey: key, baseURL: "https://api.x.ai/v1" });
 }
@@ -9,29 +14,45 @@ export async function call(
   model: string,
   prompt: string,
   schema: Record<string, unknown>,
-  retries: number
+  retries: number,
+  tools: Tools = {}
 ): Promise<Record<string, string>> {
   let last: unknown;
 
+  const enabled: Record<string, unknown>[] = [];
+  if (tools.search) enabled.push({ type: "web_search" });
+  if (tools.xSearch) enabled.push({ type: "x_search" });
+
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await api.chat.completions.create({
+      const res: any = await (api.responses as any).create({
         model,
-        temperature: 0,
-        messages: [
+        input: [
           {
             role: "system",
             content: "Extract structured data from the provided information.",
           },
           { role: "user", content: prompt },
         ],
-        response_format: {
-          type: "json_schema" as const,
-          json_schema: { name: "output", strict: true, schema },
+        ...(enabled.length > 0 && { tools: enabled }),
+        text: {
+          format: {
+            type: "json_schema" as const,
+            name: "output",
+            schema,
+            strict: true,
+          },
         },
       });
 
-      const body = res.choices[0]?.message?.content;
+      if (res.model !== model) {
+        console.warn(`Warning: requested ${model}, got ${res.model}`);
+      }
+
+      const msg = res.output.find((item: any) => item.type === "message");
+      const body = msg?.content?.find(
+        (c: any) => c.type === "output_text"
+      )?.text;
       if (!body) throw new Error("Empty response from API");
       return JSON.parse(body);
     } catch (e: unknown) {

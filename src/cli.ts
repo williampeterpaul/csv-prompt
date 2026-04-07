@@ -13,6 +13,8 @@ export interface Args {
   retries: number;
   cols: number[] | null;
   inPlace: boolean;
+  search: boolean;
+  xSearch: boolean;
 }
 
 export async function parse(): Promise<Args> {
@@ -28,12 +30,10 @@ export async function parse(): Promise<Args> {
       "api-key": { type: "string" },
       "in-place": { type: "boolean", default: false },
       output: { type: "string", short: "o" },
-      model: {
-        type: "string",
-        short: "m",
-        default: "grok-4.20-0309-non-reasoning",
-      },
+      model: { type: "string", short: "m", default: "grok-4-1-fast-non-reasoning" },
       "max-retries": { type: "string", default: "5" },
+      search: { type: "boolean", default: false },
+      "x-search": { type: "boolean", default: false },
       help: { type: "boolean", short: "h" },
     },
   });
@@ -54,8 +54,10 @@ Options:
   --api-key <key>           xAI API key (fallback: XAI_API_KEY env var)
   --in-place                Overwrite input CSV (default: write to <name>.out.csv)
   -o, --output <path>       Explicit output file path
-  -m, --model <id>          Model ID (default: grok-4.20-0309-non-reasoning)
+  -m, --model <id>          Model ID (default: grok-4-1-fast-non-reasoning)
   --max-retries <n>         Max retries per row (default: 5)
+  --search                  Enable web search (model browses the web per row)
+  --x-search                Enable X/Twitter search per row
   -h, --help                Show this help
 `);
     process.exit(0);
@@ -96,6 +98,8 @@ Options:
       ? opts.columns.split(",").map((s) => parseInt(s.trim(), 10))
       : null,
     inPlace,
+    search: opts.search ?? false,
+    xSearch: opts["x-search"] ?? false,
   };
 }
 

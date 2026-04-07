@@ -1,31 +1,6 @@
-company,website,location
-Stripe,https://stripe.com,"San Francisco, CA"
-Figma,https://figma.com,"San Francisco, CA"
-Notion,https://notion.so,"San Francisco, CA"
-Datadog,https://datadoghq.com,"New York, NY"
-Cloudflare,https://cloudflare.com,"San Francisco, CA"
-Shopify,https://shopify.com,"Ottawa, Canada"
-Twilio,https://twilio.com,"San Francisco, CA"
-Snowflake,https://snowflake.com,"Bozeman, MT"
-HashiCorp,https://hashicorp.com,"San Francisco, CA"
-Confluent,https://confluent.io,"Mountain View, CA"
-MongoDB,https://mongodb.com,"New York, NY"
-Elastic,https://elastic.co,"Mountain View, CA"
-GitLab,https://gitlab.com,"San Francisco, CA"
-Palantir,https://palantir.com,"Denver, CO"
-CrowdStrike,https://crowdstrike.com,"Austin, TX"
-Okta,https://okta.com,"San Francisco, CA"
-HubSpot,https://hubspot.com,"Cambridge, MA"
-Toast,https://pos.toasttab.com,"Boston, MA"
-Canva,https://canva.com,"Sydney, Australia"
-Airtable,https://airtable.com,"San Francisco, CA"
-Miro,https://miro.com,"San Francisco, CA"
-Deel,https://deel.com,"San Francisco, CA"
-Rippling,https://rippling.com,"San Francisco, CA"
-Vercel,https://vercel.com,"San Francisco, CA"
-Linear,https://linear.app,"San Francisco, CA"
-Supabase,https://supabase.com,"San Francisco, CA"
-Retool,https://retool.com,"San Francisco, CA"
-Webflow,https://webflow.com,"San Francisco, CA"
-Loom,https://loom.com,"San Francisco, CA"
-Zapier,https://zapier.com,"San Francisco, CA"
+company,website
+Stripe,https://stripe.com
+Vercel,https://vercel.com
+Linear,https://linear.app
+Supabase,https://supabase.com
+Retool,https://retool.com
