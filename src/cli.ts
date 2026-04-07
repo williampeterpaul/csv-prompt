@@ -28,7 +28,11 @@ export async function parse(): Promise<Args> {
       "api-key": { type: "string" },
       "in-place": { type: "boolean", default: false },
       output: { type: "string", short: "o" },
-      model: { type: "string", short: "m", default: "grok-3-fast" },
+      model: {
+        type: "string",
+        short: "m",
+        default: "grok-4.20-0309-non-reasoning",
+      },
       "max-retries": { type: "string", default: "5" },
       help: { type: "boolean", short: "h" },
     },
@@ -50,7 +54,7 @@ Options:
   --api-key <key>           xAI API key (fallback: XAI_API_KEY env var)
   --in-place                Overwrite input CSV (default: write to <name>.out.csv)
   -o, --output <path>       Explicit output file path
-  -m, --model <id>          Model ID (default: grok-3-fast)
+  -m, --model <id>          Model ID (default: grok-4.20-0309-non-reasoning)
   --max-retries <n>         Max retries per row (default: 5)
   -h, --help                Show this help
 `);
@@ -58,12 +62,13 @@ Options:
   }
 
   const src = resolve(pos[0]!);
-  if (!await Bun.file(src).exists()) fail(`CSV file not found: ${src}`);
+  if (!(await Bun.file(src).exists())) fail(`CSV file not found: ${src}`);
   if (!opts.schema) fail("--schema is required");
   if (!opts.prompt) fail("--prompt is required");
 
   const schema = resolve(opts.schema!);
-  if (!await Bun.file(schema).exists()) fail(`Schema file not found: ${schema}`);
+  if (!(await Bun.file(schema).exists()))
+    fail(`Schema file not found: ${schema}`);
 
   const key = opts["api-key"] ?? process.env.XAI_API_KEY;
   if (!key) fail("Provide --api-key or set XAI_API_KEY env var");
@@ -118,13 +123,16 @@ export function tracker(total: number) {
     let eta = "";
     if (done > 0) {
       const rem = ((Date.now() - start) / 1000 / done) * (total - done);
-      eta = rem < 60
-        ? `${Math.ceil(rem)}s`
-        : `${Math.floor(rem / 60)}m${Math.ceil(rem % 60)}s`;
+      eta =
+        rem < 60
+          ? `${Math.ceil(rem)}s`
+          : `${Math.floor(rem / 60)}m${Math.ceil(rem % 60)}s`;
     }
 
     process.stdout.write(
-      `\r  ${bar} ${done}/${total}  ✓ ${ok}  ✗ ${err}  ${eta ? `ETA ${eta}` : ""}   `
+      `\r  ${bar} ${done}/${total}  ✓ ${ok}  ✗ ${err}  ${
+        eta ? `ETA ${eta}` : ""
+      }   `
     );
   }
 
