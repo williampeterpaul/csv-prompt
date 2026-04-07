@@ -24,7 +24,16 @@ export async function run(args: Args) {
   const tools: Tools = { search: args.search, xSearch: args.xSearch };
   const queue = new PQueue({ concurrency: args.parallel, interval: 1000, intervalCap: args.rps });
   const progress = tracker(tasks.length);
-  let done = 0;
+
+  const flush = () => write(args.dest, sheet);
+  const abort = async () => {
+    queue.clear();
+    await flush();
+    console.log(`\n\nInterrupted — progress saved to ${args.dest}`);
+    process.exit(130);
+  };
+  process.on("SIGINT", abort);
+  process.on("SIGTERM", abort);
 
   for (const idx of tasks) {
     queue.add(async () => {
@@ -44,12 +53,13 @@ export async function run(args: Args) {
       }
 
       progress.tick(ok);
-      if (++done % 25 === 0) await write(args.dest, sheet);
+      await flush();
     });
   }
 
   await queue.onIdle();
-  await write(args.dest, sheet);
+  process.removeListener("SIGINT", abort);
+  process.removeListener("SIGTERM", abort);
 
   console.log(`\n→ ${args.dest}`);
   progress.summary(skipped);
