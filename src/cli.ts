@@ -46,8 +46,8 @@ Usage:
   csv-prompt <csv-file> [options]
 
 Options:
-  -s, --schema <path>       Path to .ts file exporting a Zod schema (required)
-  -p, --prompt <text>       Prompt template for each row (required)
+  -s, --schema <path>       Path to .json or .ts schema file (required)
+  -p, --prompt <text>       Prompt for each row (default: "Fill in each field as described in the schema.")
   -c, --columns <indexes>   Comma-separated 0-based column indexes (default: all)
   --concurrency <n>         Max parallel API calls (default: 5)
   --rate-limit <n>          Max requests per second (default: 20)
@@ -66,7 +66,6 @@ Options:
   const src = resolve(pos[0]!);
   if (!(await Bun.file(src).exists())) fail(`CSV file not found: ${src}`);
   if (!opts.schema) fail("--schema is required");
-  if (!opts.prompt) fail("--prompt is required");
 
   const schema = resolve(opts.schema!);
   if (!(await Bun.file(schema).exists()))
@@ -87,7 +86,7 @@ Options:
   return {
     src,
     schema,
-    prompt: opts.prompt!,
+    prompt: opts.prompt ?? "Fill in each field as described in the schema.",
     dest,
     key: key!,
     model: opts.model!,

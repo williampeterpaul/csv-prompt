@@ -9,6 +9,7 @@ export function client(key: string): OpenAI {
   return new OpenAI({ apiKey: key, baseURL: "https://api.x.ai/v1" });
 }
 
+// ~$0.00065/row with search (~2700 input + ~220 output tokens), ~$0.00009/row without (grok-4-1-fast-non-reasoning)
 export async function call(
   api: OpenAI,
   model: string,

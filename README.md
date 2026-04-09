@@ -1,6 +1,6 @@
 # csv-prompt
 
-Process CSV rows through an AI model to extract structured data using Zod schemas. Supports concurrent requests, rate limiting, and automatic resume.
+Process CSV rows through an AI model to extract structured data. Supports concurrent requests, rate limiting, and automatic resume.
 
 ## Example
 
@@ -15,7 +15,36 @@ Supabase,https://supabase.com
 Retool,https://retool.com
 ```
 
-And a Zod schema in `examples/schema.ts`:
+Define the output fields in a JSON schema (`examples/schema.json`):
+
+```json
+{
+  "title": "The exact page title from the company website",
+  "tagline": "The main hero or tagline text visible on the homepage",
+  "reasoning": "Brief explanation of how you determined the tagline"
+}
+```
+
+Each key becomes an output column; the value tells the model what to extract.
+
+Run with `--search` so the model visits each company's website:
+
+```bash
+bun run src/index.ts examples/sample.csv \
+  --schema examples/schema.json \
+  --search
+```
+
+You can override the default prompt:
+
+```bash
+bun run src/index.ts examples/sample.csv \
+  --schema examples/schema.json \
+  --prompt "Visit this company's website and extract the page title and main tagline" \
+  --search
+```
+
+Zod schemas (`.ts` files) are also supported for advanced types:
 
 ```ts
 import { z } from "zod";
@@ -25,15 +54,6 @@ export default z.object({
   tagline: z.string().describe("The main hero or tagline text visible on the homepage"),
   reasoning: z.string().describe("Brief explanation of how you determined the tagline"),
 });
-```
-
-Run with `--search` so the model visits each company's website:
-
-```bash
-bun run src/index.ts examples/sample.csv \
-  --schema examples/schema.ts \
-  --prompt "Visit this company's website and extract the page title and main tagline" \
-  --search
 ```
 
 Output in `examples/sample.out.csv`:
@@ -48,8 +68,8 @@ Stripe,https://stripe.com,Stripe | Financial Infrastructure for the Internet,Fin
 
 | Flag                  | Short | Default                       | Description                                                     |
 | --------------------- | ----- | ----------------------------- | --------------------------------------------------------------- |
-| `--schema <path>`     | `-s`  | —                             | Path to `.ts` file exporting a Zod schema (required)            |
-| `--prompt <text>`     | `-p`  | —                             | Prompt sent to the model for each row (required)                |
+| `--schema <path>`     | `-s`  | —                             | Path to `.json` or `.ts` schema file (required)                 |
+| `--prompt <text>`     | `-p`  | (see below)                   | Prompt sent to the model for each row                           |
 | `--api-key <key>`     |       | `$XAI_API_KEY`                | xAI API key                                                     |
 | `--model <id>`        | `-m`  | `grok-4-1-fast-non-reasoning` | Model ID                                                        |
 | `--columns <indexes>` | `-c`  | all                           | Comma-separated 0-based column indexes to include in the prompt |
