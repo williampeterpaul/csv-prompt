@@ -21,7 +21,7 @@ export async function run(args: Args) {
   console.log(`Processing ${tasks.length} rows (${skipped} skipped, ${sheet.rows.length} total)`);
 
   const api = client(args.key);
-  const tools: Tools = { search: args.search, xSearch: args.xSearch };
+  const tools: Tools = { search: args.search };
   const queue = new PQueue({ concurrency: args.parallel, interval: 1000, intervalCap: args.rps });
   const progress = tracker(tasks.length);
 

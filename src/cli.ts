@@ -14,7 +14,6 @@ export interface Args {
   cols: number[] | null;
   inPlace: boolean;
   search: boolean;
-  xSearch: boolean;
 }
 
 export async function parse(): Promise<Args> {
@@ -33,7 +32,6 @@ export async function parse(): Promise<Args> {
       model: { type: "string", short: "m", default: "grok-4-1-fast-non-reasoning" },
       "max-retries": { type: "string", default: "5" },
       search: { type: "boolean", default: false },
-      "x-search": { type: "boolean", default: false },
       help: { type: "boolean", short: "h" },
     },
   });
@@ -57,7 +55,6 @@ Options:
   -m, --model <id>          Model ID (default: grok-4-1-fast-non-reasoning)
   --max-retries <n>         Max retries per row (default: 5)
   --search                  Enable web search (model browses the web per row)
-  --x-search                Enable X/Twitter search per row
   -h, --help                Show this help
 `);
     process.exit(0);
@@ -98,7 +95,6 @@ Options:
       : null,
     inPlace,
     search: opts.search ?? false,
-    xSearch: opts["x-search"] ?? false,
   };
 }
 

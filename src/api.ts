@@ -2,7 +2,6 @@ import OpenAI from "openai";
 
 export interface Tools {
   search?: boolean;
-  xSearch?: boolean;
 }
 
 export function client(key: string): OpenAI {
@@ -22,7 +21,6 @@ export async function call(
 
   const enabled: Record<string, unknown>[] = [];
   if (tools.search) enabled.push({ type: "web_search" });
-  if (tools.xSearch) enabled.push({ type: "x_search" });
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {

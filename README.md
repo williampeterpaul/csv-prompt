@@ -77,7 +77,6 @@ Stripe,https://stripe.com,Stripe | Financial Infrastructure for the Internet,Fin
 | `--rate-limit <n>`    |       | `20`                          | Max requests per second                                         |
 | `--max-retries <n>`   |       | `5`                           | Max retries per row on failure                                  |
 | `--search`            |       | `false`                       | Enable web search (model can browse the web per row)            |
-| `--x-search`          |       | `false`                       | Enable X/Twitter search per row                                 |
 | `--in-place`          |       | `false`                       | Overwrite input CSV instead of writing to `<name>.out.csv`      |
 | `--output <path>`     | `-o`  | `<name>.out.csv`              | Explicit output file path                                       |
 | `--help`              | `-h`  |                               | Show help                                                       |
