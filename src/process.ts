@@ -2,7 +2,7 @@ import PQueue from "p-queue";
 import type { Args } from "./cli";
 import { tracker } from "./cli";
 import { load } from "./schema";
-import { client, call, type Tools } from "./api";
+import { pick, type Tools } from "./providers";
 import { read, write, select, render, pending } from "./csv";
 
 const ERR = "_error";
@@ -20,7 +20,8 @@ export async function run(args: Args) {
 
   console.log(`Processing ${tasks.length} rows (${skipped} skipped, ${sheet.rows.length} total)`);
 
-  const api = client(args.key);
+  const provider = pick(args.provider);
+  const api = provider.client(args.key);
   const tools: Tools = { search: args.search };
   const queue = new PQueue({ concurrency: args.parallel, interval: 1000, intervalCap: args.rps });
   const progress = tracker(tasks.length);
@@ -42,7 +43,7 @@ export async function run(args: Args) {
 
       try {
         const prompt = render(row, sheet.headers, selected, args.prompt);
-        const result = await call(api, args.model, prompt, schema, args.retries, tools);
+        const result = await provider.call(api, args.model, prompt, schema, args.retries, tools);
         for (const k of keys) {
           row[sheet.colmap[k]!] = String(result[k] ?? "");
         }

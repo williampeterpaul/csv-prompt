@@ -1,5 +1,6 @@
 import { parseArgs } from "node:util";
 import { resolve, basename, extname, dirname, join } from "node:path";
+import { pick } from "./providers";
 
 export interface Args {
   src: string;
@@ -14,6 +15,7 @@ export interface Args {
   cols: number[] | null;
   inPlace: boolean;
   search: boolean;
+  provider: "xai" | "groq";
 }
 
 export async function parse(): Promise<Args> {
@@ -32,6 +34,7 @@ export async function parse(): Promise<Args> {
       model: { type: "string", short: "m", default: "grok-4-1-fast-non-reasoning" },
       "max-retries": { type: "string", default: "5" },
       search: { type: "boolean", default: false },
+      provider: { type: "string", default: "xai" },
       help: { type: "boolean", short: "h" },
     },
   });
@@ -49,12 +52,13 @@ Options:
   -c, --columns <indexes>   Comma-separated 0-based column indexes (default: all)
   --concurrency <n>         Max parallel API calls (default: 5)
   --rate-limit <n>          Max requests per second (default: 20)
-  --api-key <key>           xAI API key (fallback: XAI_API_KEY env var)
+  --provider <xai|groq>     API provider (default: xai)
+  --api-key <key>           API key (fallback: XAI_API_KEY or GROQ_API_KEY env var)
   --in-place                Overwrite input CSV (default: write to <name>.out.csv)
   -o, --output <path>       Explicit output file path
   -m, --model <id>          Model ID (default: grok-4-1-fast-non-reasoning)
   --max-retries <n>         Max retries per row (default: 5)
-  --search                  Enable web search (model browses the web per row)
+  --search                  Enable web search (xAI only; ignored for Groq compound)
   -h, --help                Show this help
 `);
     process.exit(0);
@@ -68,8 +72,9 @@ Options:
   if (!(await Bun.file(schema).exists()))
     fail(`Schema file not found: ${schema}`);
 
-  const key = opts["api-key"] ?? process.env.XAI_API_KEY;
-  if (!key) fail("Provide --api-key or set XAI_API_KEY env var");
+  const p = pick(opts.provider!);
+  const key = opts["api-key"] ?? process.env[p.envVar];
+  if (!key) fail(`Provide --api-key or set ${p.envVar} env var`);
 
   const inPlace = opts["in-place"] ?? false;
   let dest: string;
@@ -95,6 +100,7 @@ Options:
       : null,
     inPlace,
     search: opts.search ?? false,
+    provider: p.name,
   };
 }
 

@@ -70,15 +70,31 @@ Stripe,https://stripe.com,Stripe | Financial Infrastructure for the Internet,Fin
 | --------------------- | ----- | ----------------------------- | --------------------------------------------------------------- |
 | `--schema <path>`     | `-s`  | —                             | Path to `.json` or `.ts` schema file (required)                 |
 | `--prompt <text>`     | `-p`  | (see below)                   | Prompt sent to the model for each row                           |
-| `--api-key <key>`     |       | `$XAI_API_KEY`                | xAI API key                                                     |
+| `--provider <name>`   |       | `xai`                         | API provider (`xai` or `groq`)                                  |
+| `--api-key <key>`     |       | `$XAI_API_KEY` / `$GROQ_API_KEY` | API key (env var depends on provider)                        |
 | `--model <id>`        | `-m`  | `grok-4-1-fast-non-reasoning` | Model ID                                                        |
 | `--columns <indexes>` | `-c`  | all                           | Comma-separated 0-based column indexes to include in the prompt |
 | `--concurrency <n>`   |       | `5`                           | Max parallel API calls                                          |
 | `--rate-limit <n>`    |       | `20`                          | Max requests per second                                         |
 | `--max-retries <n>`   |       | `5`                           | Max retries per row on failure                                  |
-| `--search`            |       | `false`                       | Enable web search (model can browse the web per row)            |
+| `--search`            |       | `false`                       | Enable web search (xAI only; ignored for Groq compound)         |
 | `--in-place`          |       | `false`                       | Overwrite input CSV instead of writing to `<name>.out.csv`      |
 | `--output <path>`     | `-o`  | `<name>.out.csv`              | Explicit output file path                                       |
 | `--help`              | `-h`  |                               | Show help                                                       |
+
+### Groq
+
+Use `--provider groq` with a [compound model](https://console.groq.com/docs/compound) for built-in web search:
+
+```bash
+bun run src/index.ts examples/sample.csv \
+  --schema examples/schema.json \
+  --provider groq \
+  -m groq/compound
+```
+
+Set `GROQ_API_KEY` or pass `--api-key`.
+
+---
 
 Re-running the same command resumes from where it left off, skipping rows that already have results.
