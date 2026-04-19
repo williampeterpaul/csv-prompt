@@ -1,8 +1,11 @@
 import OpenAI from "openai";
-import type { Provider, Tools } from "./types";
+import type { Provider, Tools, Usage } from "./types";
 import { withRetry } from "./retry";
 
-// ~$0.00065/row with search (~2700 input + ~220 output tokens), ~$0.00009/row without (grok-4-1-fast-non-reasoning)
+// grok-4-1-fast-non-reasoning: $0.20/M in, $0.50/M out
+const INPUT = 0.20 / 1e6;
+const OUTPUT = 0.50 / 1e6;
+
 export const xai: Provider = {
   name: "xai",
   envVar: "XAI_API_KEY",
@@ -11,7 +14,20 @@ export const xai: Provider = {
     return new OpenAI({ apiKey: key, baseURL: "https://api.x.ai/v1" });
   },
 
-  call(api, model, prompt, schema, retries, tools: Tools = {}) {
+  usage(): Usage {
+    const u: Usage = {
+      input: 0,
+      output: 0,
+      cost: () => u.input * INPUT + u.output * OUTPUT,
+      log: () => {
+        console.log(`  Tokens:  ${u.input} in / ${u.output} out`);
+        console.log(`  Cost:    ~$${u.cost().toFixed(4)}`);
+      },
+    };
+    return u;
+  },
+
+  call(api, model, prompt, schema, retries, tools: Tools = {}, usage) {
     const enabled: Record<string, unknown>[] = [];
     if (tools.search) enabled.push({ type: "web_search" });
 
@@ -35,6 +51,11 @@ export const xai: Provider = {
           },
         },
       });
+
+      if (res.usage) {
+        usage.input += res.usage.input_tokens ?? 0;
+        usage.output += res.usage.output_tokens ?? 0;
+      }
 
       if (res.model !== model) {
         console.warn(`Warning: requested ${model}, got ${res.model}`);

@@ -23,6 +23,7 @@ export async function run(args: Args) {
   const provider = pick(args.provider);
   const api = provider.client(args.key);
   const tools: Tools = { search: args.search };
+  const usage = provider.usage();
   const queue = new PQueue({ concurrency: args.parallel, interval: 1000, intervalCap: args.rps });
   const progress = tracker(tasks.length);
 
@@ -43,7 +44,7 @@ export async function run(args: Args) {
 
       try {
         const prompt = render(row, sheet.headers, selected, args.prompt);
-        const result = await provider.call(api, args.model, prompt, schema, args.retries, tools);
+        const result = await provider.call(api, args.model, prompt, schema, args.retries, tools, usage);
         for (const k of keys) {
           row[sheet.colmap[k]!] = String(result[k] ?? "");
         }
@@ -64,4 +65,5 @@ export async function run(args: Args) {
 
   console.log(`\n→ ${args.dest}`);
   progress.summary(skipped);
+  usage.log();
 }

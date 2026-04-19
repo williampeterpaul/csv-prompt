@@ -2,7 +2,7 @@ import { xai } from "./xai";
 import { groq } from "./groq";
 import type { Provider } from "./types";
 
-export type { Tools, Provider } from "./types";
+export type { Tools, Provider, Usage } from "./types";
 
 const providers = { xai, groq } as const;
 
