@@ -31,7 +31,7 @@ export async function parse(): Promise<Args> {
       "api-key": { type: "string" },
       "in-place": { type: "boolean", default: false },
       output: { type: "string", short: "o" },
-      model: { type: "string", short: "m", default: "grok-4-1-fast-non-reasoning" },
+      model: { type: "string", short: "m", default: "grok-3" },
       "max-retries": { type: "string", default: "5" },
       search: { type: "boolean", default: false },
       provider: { type: "string", default: "xai" },
@@ -56,7 +56,7 @@ Options:
   --api-key <key>           API key (fallback: XAI_API_KEY or GROQ_API_KEY env var)
   --in-place                Overwrite input CSV (default: write to <name>.out.csv)
   -o, --output <path>       Explicit output file path
-  -m, --model <id>          Model ID (default: grok-4-1-fast-non-reasoning)
+  -m, --model <id>          Model ID (default: grok-3)
   --max-retries <n>         Max retries per row (default: 5)
   --search                  Enable web search (xAI only; ignored for Groq compound)
   -h, --help                Show this help

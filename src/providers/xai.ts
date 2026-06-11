@@ -2,9 +2,9 @@ import OpenAI from "openai";
 import type { Provider, Tools, Usage } from "./types";
 import { withRetry } from "./retry";
 
-// grok-4-1-fast-non-reasoning: $0.20/M in, $0.50/M out
-const INPUT = 0.20 / 1e6;
-const OUTPUT = 0.50 / 1e6;
+// grok-3 (reasoning: none): $3/M in, $15/M out
+const INPUT = 3 / 1e6;
+const OUTPUT = 15 / 1e6;
 
 export const xai: Provider = {
   name: "xai",
@@ -34,6 +34,7 @@ export const xai: Provider = {
     return withRetry(async () => {
       const res: any = await (api.responses as any).create({
         model,
+        reasoning: { effort: "none" },
         input: [
           {
             role: "system",
