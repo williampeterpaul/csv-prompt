@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import type { Provider, Tools, Usage } from "./types";
 import { withRetry } from "./retry";
 
-// grok-3 (reasoning: none): $3/M in, $15/M out
+// grok-4.3 (reasoning: none): $3/M in, $15/M out
 const INPUT = 3 / 1e6;
 const OUTPUT = 15 / 1e6;
 

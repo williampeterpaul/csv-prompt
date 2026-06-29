@@ -51,8 +51,12 @@ import { z } from "zod";
 
 export default z.object({
   title: z.string().describe("The exact page title from the company website"),
-  tagline: z.string().describe("The main hero or tagline text visible on the homepage"),
-  reasoning: z.string().describe("Brief explanation of how you determined the tagline"),
+  tagline: z
+    .string()
+    .describe("The main hero or tagline text visible on the homepage"),
+  reasoning: z
+    .string()
+    .describe("Brief explanation of how you determined the tagline"),
 });
 ```
 
@@ -66,21 +70,21 @@ Stripe,https://stripe.com,Stripe | Financial Infrastructure for the Internet,Fin
 
 ## Options
 
-| Flag                  | Short | Default                       | Description                                                     |
-| --------------------- | ----- | ----------------------------- | --------------------------------------------------------------- |
-| `--schema <path>`     | `-s`  | —                             | Path to `.json` or `.ts` schema file (required)                 |
-| `--prompt <text>`     | `-p`  | (see below)                   | Prompt sent to the model for each row                           |
-| `--provider <name>`   |       | `xai`                         | API provider (`xai` or `groq`)                                  |
-| `--api-key <key>`     |       | `$XAI_API_KEY` / `$GROQ_API_KEY` | API key (env var depends on provider)                        |
-| `--model <id>`        | `-m`  | `grok-4-1-fast-non-reasoning` | Model ID                                                        |
-| `--columns <indexes>` | `-c`  | all                           | Comma-separated 0-based column indexes to include in the prompt |
-| `--concurrency <n>`   |       | `5`                           | Max parallel API calls                                          |
-| `--rate-limit <n>`    |       | `20`                          | Max requests per second                                         |
-| `--max-retries <n>`   |       | `5`                           | Max retries per row on failure                                  |
-| `--search`            |       | `false`                       | Enable web search (xAI only; ignored for Groq compound)         |
-| `--in-place`          |       | `false`                       | Overwrite input CSV instead of writing to `<name>.out.csv`      |
-| `--output <path>`     | `-o`  | `<name>.out.csv`              | Explicit output file path                                       |
-| `--help`              | `-h`  |                               | Show help                                                       |
+| Flag                  | Short | Default                          | Description                                                     |
+| --------------------- | ----- | -------------------------------- | --------------------------------------------------------------- |
+| `--schema <path>`     | `-s`  | —                                | Path to `.json` or `.ts` schema file (required)                 |
+| `--prompt <text>`     | `-p`  | (see below)                      | Prompt sent to the model for each row                           |
+| `--provider <name>`   |       | `xai`                            | API provider (`xai` or `groq`)                                  |
+| `--api-key <key>`     |       | `$XAI_API_KEY` / `$GROQ_API_KEY` | API key (env var depends on provider)                           |
+| `--model <id>`        | `-m`  | `grok-4.3`                       | Model ID                                                        |
+| `--columns <indexes>` | `-c`  | all                              | Comma-separated 0-based column indexes to include in the prompt |
+| `--concurrency <n>`   |       | `5`                              | Max parallel API calls                                          |
+| `--rate-limit <n>`    |       | `20`                             | Max requests per second                                         |
+| `--max-retries <n>`   |       | `5`                              | Max retries per row on failure                                  |
+| `--search`            |       | `false`                          | Enable web search (xAI only; ignored for Groq compound)         |
+| `--in-place`          |       | `false`                          | Overwrite input CSV instead of writing to `<name>.out.csv`      |
+| `--output <path>`     | `-o`  | `<name>.out.csv`                 | Explicit output file path                                       |
+| `--help`              | `-h`  |                                  | Show help                                                       |
 
 ### Groq
 
