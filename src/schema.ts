@@ -10,7 +10,7 @@ async function fromJSON(path: string) {
   const raw = await Bun.file(path).json();
 
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-    throw new Error("JSON schema must be an object mapping field names to descriptions");
+    throw new Error("JSON schema must be an object mapping field names to descriptions or property schemas");
   }
 
   const entries = Object.entries(raw as Record<string, unknown>);
@@ -20,7 +20,10 @@ async function fromJSON(path: string) {
 
   const props: Record<string, unknown> = {};
   for (const [k, v] of entries) {
-    props[k] = { type: "string", description: String(v) };
+    props[k] =
+      v && typeof v === "object" && !Array.isArray(v)
+        ? { type: "string", ...(v as Record<string, unknown>) }
+        : { type: "string", description: String(v) };
   }
 
   const schema: Record<string, unknown> = {

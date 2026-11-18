@@ -27,6 +27,18 @@ Define the output fields in a JSON schema (`examples/schema.json`):
 
 Each key becomes an output column; the value tells the model what to extract.
 
+To limit a field to fixed values, give it a property schema instead of a description:
+
+```json
+{
+  "reason": "One short sentence explaining the choice",
+  "category": {
+    "description": "What the company sells",
+    "enum": ["Software", "Services", "Other"]
+  }
+}
+```
+
 Run with `--search` so the model visits each company's website:
 
 ```bash
@@ -74,17 +86,28 @@ Stripe,https://stripe.com,Stripe | Financial Infrastructure for the Internet,Fin
 | --------------------- | ----- | -------------------------------- | --------------------------------------------------------------- |
 | `--schema <path>`     | `-s`  | —                                | Path to `.json` or `.ts` schema file (required)                 |
 | `--prompt <text>`     | `-p`  | (see below)                      | Prompt sent to the model for each row                           |
-| `--provider <name>`   |       | `xai`                            | API provider (`xai` or `groq`)                                  |
-| `--api-key <key>`     |       | `$XAI_API_KEY` / `$GROQ_API_KEY` | API key (env var depends on provider)                           |
+| `--provider <name>`   |       | `xai`                            | API provider (`xai`, `groq` or `openai`)                        |
+| `--api-key <key>`     |       | `$XAI_API_KEY` / `$GROQ_API_KEY` / `$OPENAI_API_KEY` | API key (env var depends on provider)          |
 | `--model <id>`        | `-m`  | `grok-4.3`                       | Model ID                                                        |
 | `--columns <indexes>` | `-c`  | all                              | Comma-separated 0-based column indexes to include in the prompt |
 | `--concurrency <n>`   |       | `5`                              | Max parallel API calls                                          |
 | `--rate-limit <n>`    |       | `20`                             | Max requests per second                                         |
 | `--max-retries <n>`   |       | `5`                              | Max retries per row on failure                                  |
-| `--search`            |       | `false`                          | Enable web search (xAI only; ignored for Groq compound)         |
+| `--search`            |       | `false`                          | Enable web search (xAI and OpenAI; ignored for Groq compound)   |
 | `--in-place`          |       | `false`                          | Overwrite input CSV instead of writing to `<name>.out.csv`      |
 | `--output <path>`     | `-o`  | `<name>.out.csv`                 | Explicit output file path                                       |
 | `--help`              | `-h`  |                                  | Show help                                                       |
+
+### OpenAI
+
+Use `--provider openai` and set `OPENAI_API_KEY` (or pass `--api-key`):
+
+```bash
+bun run src/index.ts examples/sample.csv \
+  --schema examples/schema.json \
+  --provider openai \
+  -m gpt-5.6-luna
+```
 
 ### Groq
 

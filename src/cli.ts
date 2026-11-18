@@ -15,7 +15,7 @@ export interface Args {
   cols: number[] | null;
   inPlace: boolean;
   search: boolean;
-  provider: "xai" | "groq";
+  provider: "xai" | "groq" | "openai";
 }
 
 export async function parse(): Promise<Args> {
@@ -52,13 +52,13 @@ Options:
   -c, --columns <indexes>   Comma-separated 0-based column indexes (default: all)
   --concurrency <n>         Max parallel API calls (default: 5)
   --rate-limit <n>          Max requests per second (default: 20)
-  --provider <xai|groq>     API provider (default: xai)
-  --api-key <key>           API key (fallback: XAI_API_KEY or GROQ_API_KEY env var)
+  --provider <name>         API provider: xai, groq or openai (default: xai)
+  --api-key <key>           API key (fallback: XAI_API_KEY, GROQ_API_KEY or OPENAI_API_KEY env var)
   --in-place                Overwrite input CSV (default: write to <name>.out.csv)
   -o, --output <path>       Explicit output file path
   -m, --model <id>          Model ID (default: grok-4.3)
   --max-retries <n>         Max retries per row (default: 5)
-  --search                  Enable web search (xAI only; ignored for Groq compound)
+  --search                  Enable web search (xAI and OpenAI; ignored for Groq compound)
   -h, --help                Show this help
 `);
     process.exit(0);

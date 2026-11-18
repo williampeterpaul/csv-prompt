@@ -12,8 +12,8 @@ export interface Usage {
 }
 
 export interface Provider {
-  name: "xai" | "groq";
-  envVar: "XAI_API_KEY" | "GROQ_API_KEY";
+  name: "xai" | "groq" | "openai";
+  envVar: "XAI_API_KEY" | "GROQ_API_KEY" | "OPENAI_API_KEY";
   client(key: string): OpenAI;
   usage(): Usage;
   call(
